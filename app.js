@@ -9,9 +9,12 @@ import {
 
 // ✅ PASTE YOUR firebaseConfig HERE (from Firebase console)
 const firebaseConfig = {
-  apiKey: "PASTE_HERE",
-  authDomain: "PASTE_HERE",
-  projectId: "PASTE_HERE",
+  apiKey: "AIzaSyDm3s8rrISreQcf4GJrHgSiiQi_aTnAZIY",
+  authDomain: "database-28865.firebaseapp.com",
+  projectId: "database-28865",
+  storageBucket: "database-28865.firebasestorage.app",
+  messagingSenderId: "755443492467",
+  appId: "1:755443492467:web:9482709a391b8de334ac06"
 };
 
 const app = initializeApp(firebaseConfig);
