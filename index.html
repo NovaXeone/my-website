@@ -1,77 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-  <title>My Site</title>
-  <style>
-    body {
-      font-family: Arial;
-      background: #0f172a;
-      color: white;
-      text-align: center;
-    }
-
-    input, button {
-      padding: 10px;
-      margin: 5px;
-    }
-
-    .post {
-      background: #1e293b;
-      margin: 10px;
-      padding: 10px;
-      border-radius: 8px;
-    }
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Project Nadir — Dashboard</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+  <div class="nav">
+    <div class="brand">PROJECT NADIR</div>
+    <div>
+      <a href="index.html">Dashboard</a>
+      <a href="archive.html">Archive</a>
+      <a href="new.html">New File</a>
+    </div>
+  </div>
 
-<h1>My Community</h1>
+  <div class="container">
+    <div class="header">
+      <h1>PROJECT NADIR</h1>
+      <p>Surveyor Files — Command Dashboard</p>
+    </div>
 
-<input id="postInput" placeholder="Write something...">
-<button onclick="addPost()">Post</button>
+    <div class="row">
+      <div class="card" style="flex:1; min-width:240px;">
+        <div style="color:var(--muted);font-size:13px;">TOTAL FILES</div>
+        <div style="font-size:34px;margin-top:6px;" id="totalFiles">0</div>
+      </div>
 
-<div id="posts"></div>
+      <div class="card" style="flex:1; min-width:240px;">
+        <div style="color:var(--muted);font-size:13px;">ACTIVE</div>
+        <div style="font-size:34px;margin-top:6px;" id="activeFiles">0</div>
+      </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+      <div class="card" style="flex:1; min-width:240px;">
+        <div style="color:var(--muted);font-size:13px;">REDACTED</div>
+        <div style="font-size:34px;margin-top:6px;" id="redactedFiles">0</div>
+      </div>
+    </div>
+  </div>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDm3s8rrISreQcf4GJrHgSiiQi_aTnAZIY",
-  authDomain: "database-28865.firebaseapp.com",
-  projectId: "database-28865",
-  storageBucket: "database-28865.firebasestorage.app",
-  messagingSenderId: "755443492467",
-  appId: "1:755443492467:web:9482709a391b8de334ac06"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-window.addPost = async function() {
-  const text = document.getElementById("postInput").value;
-
-  await addDoc(collection(db, "posts"), {
-    content: text,
-    time: Date.now()
-  });
-
-  loadPosts();
-};
-
-async function loadPosts() {
-  const snapshot = await getDocs(collection(db, "posts"));
-  const postsDiv = document.getElementById("posts");
-  postsDiv.innerHTML = "";
-
-  snapshot.forEach(doc => {
-    postsDiv.innerHTML += `<div class="post">${doc.data().content}</div>`;
-  });
-}
-
-loadPosts();
-</script>
-
+  <script type="module" src="app.js"></script>
 </body>
 </html>
