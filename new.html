@@ -1,1 +1,40 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Project Nadir — New File</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="nav">
+    <div class="brand">PROJECT NADIR</div>
+    <div>
+      <a href="index.html">Dashboard</a>
+      <a href="archive.html">Archive</a>
+      <a href="new.html">New File</a>
+    </div>
+  </div>
 
+  <div class="container">
+    <div class="header">
+      <h1>NEW FILE</h1>
+      <p>Create and submit a record</p>
+    </div>
+
+    <div class="card" style="max-width:720px;margin:0 auto;">
+      <div style="margin-bottom:10px;color:var(--muted);font-size:13px;">TITLE</div>
+      <input class="input" id="title" placeholder="File title">
+
+      <div style="margin:16px 0 10px;color:var(--muted);font-size:13px;">CONTENT</div>
+      <textarea class="textarea" id="content" placeholder="Write the file content..."></textarea>
+
+      <div style="margin-top:14px;display:flex;gap:10px;justify-content:flex-end;">
+        <button class="btn" id="submitBtn">Submit</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
