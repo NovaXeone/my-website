@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Site</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 5px;
+    }
+
+    .post {
+      background: #1e293b;
+      margin: 10px;
+      padding: 10px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>My Community</h1>
+
+<input id="postInput" placeholder="Write something...">
+<button onclick="addPost()">Post</button>
+
+<div id="posts"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "PUT_YOUR_KEY_HERE",
+  authDomain: "PUT_YOUR_DOMAIN",
+  projectId: "PUT_PROJECT_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.addPost = async function() {
+  const text = document.getElementById("postInput").value;
+
+  await addDoc(collection(db, "posts"), {
+    content: text,
+    time: Date.now()
+  });
+
+  loadPosts();
+};
+
+async function loadPosts() {
+  const snapshot = await getDocs(collection(db, "posts"));
+  const postsDiv = document.getElementById("posts");
+  postsDiv.innerHTML = "";
+
+  snapshot.forEach(doc => {
+    postsDiv.innerHTML += `<div class="post">${doc.data().content}</div>`;
+  });
+}
+
+loadPosts();
+</script>
+
+</body>
+</html>
