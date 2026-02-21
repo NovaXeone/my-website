@@ -36,10 +36,15 @@ let currentUser = null;
 const authBtn = document.getElementById("authBtn");
 
 authBtn?.addEventListener("click", async () => {
-  if (!currentUser) {
-    await signInWithPopup(auth, provider);
-  } else {
-    await signOut(auth);
+  try {
+    if (!currentUser) {
+      await signInWithPopup(auth, provider);
+    } else {
+      await signOut(auth);
+    }
+  } catch (e) {
+    console.error("AUTH ERROR:", e);
+    alert(`Auth failed: ${e.code || e.message}`);
   }
 });
 
