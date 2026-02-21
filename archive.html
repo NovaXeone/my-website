@@ -1,32 +1,30 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Project Nadir — Archive</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Archive — Project Nadir</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="nav">
-    <div class="brand">PROJECT NADIR</div>
-    <div>
-      <a href="index.html">Dashboard</a>
-      <a href="archive.html">Archive</a>
-      <a href="new.html">New File</a>
-    </div>
+
+<div class="nav">
+  <div class="brand">PROJECT NADIR</div>
+  <div>
+    <a href="index.html">Dashboard</a>
+    <a href="archive.html">Archive</a>
+    <a href="new.html">New File</a>
+    <a href="profile.html">Profile</a>
+    <a href="admin.html">Admin</a>
+    <a href="moderation.html">Moderation</a>
+    <button id="authBtn" class="btn">Sign in</button>
   </div>
+</div>
 
-  <div class="container">
-    <div class="header">
-      <h1>ARCHIVE</h1>
-      <p>All submitted files</p>
-    </div>
+<div class="container">
+  <h1>Archive Logs</h1>
+  <div id="posts"></div>
+</div>
 
-    <div id="posts"></div>
-
-    <button class="btn" id="authBtn" style="margin-left:14px;">Sign in</button>
-  </div>
-
-  <script type="module" src="app.js"></script>
+<script type="module" src="app.js"></script>
 </body>
 </html>
