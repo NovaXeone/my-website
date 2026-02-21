@@ -43,8 +43,12 @@ authBtn?.addEventListener("click", async () => {
       await signOut(auth);
     }
   } catch (e) {
-    console.error("AUTH ERROR:", e);
-    alert(`Auth failed: ${e.code || e.message}`);
+    console.error("AUTH FULL ERROR OBJECT:", e);
+    alert(JSON.stringify({
+      code: e?.code,
+      message: e?.message,
+      name: e?.name
+    }, null, 2));
   }
 });
 
