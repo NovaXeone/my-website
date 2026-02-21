@@ -1,45 +1,43 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
   <title>Project Nadir — Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="nav">
-    <div class="brand">PROJECT NADIR</div>
-    <div>
-      <a href="index.html">Dashboard</a>
-      <a href="archive.html">Archive</a>
-      <a href="new.html">New File</a>
+
+<div class="nav">
+  <div class="brand">PROJECT NADIR</div>
+  <div>
+    <a href="index.html">Dashboard</a>
+    <a href="archive.html">Archive</a>
+    <a href="new.html">New File</a>
+    <a href="profile.html">Profile</a>
+    <a href="admin.html">Admin</a>
+    <a href="moderation.html">Moderation</a>
+    <button id="authBtn" class="btn">Sign in</button>
+  </div>
+</div>
+
+<div class="container">
+  <h1>Dashboard</h1>
+
+  <div class="stats">
+    <div class="card">
+      <h2 id="totalFiles">0</h2>
+      <p>Total Files</p>
+    </div>
+    <div class="card">
+      <h2 id="pendingFiles">0</h2>
+      <p>Pending</p>
     </div>
   </div>
 
-  <div class="container">
-    <div class="header">
-      <h1>PROJECT NADIR</h1>
-      <p>Surveyor Files — Command Dashboard</p>
-    </div>
+  <h3>Recent Approved Files</h3>
+  <div id="recentPosts"></div>
+</div>
 
-    <div class="row">
-      <div class="card" style="flex:1; min-width:240px;">
-        <div style="color:var(--muted);font-size:13px;">TOTAL FILES</div>
-        <div style="font-size:34px;margin-top:6px;" id="totalFiles">0</div>
-      </div>
-
-      <div class="card" style="flex:1; min-width:240px;">
-        <div style="color:var(--muted);font-size:13px;">ACTIVE</div>
-        <div style="font-size:34px;margin-top:6px;" id="activeFiles">0</div>
-      </div>
-
-      <div class="card" style="flex:1; min-width:240px;">
-        <div style="color:var(--muted);font-size:13px;">REDACTED</div>
-        <div style="font-size:34px;margin-top:6px;" id="redactedFiles">0</div>
-      </div>
-    </div>
-  </div>
-
-  <script type="module" src="app.js"></script>
+<script type="module" src="app.js"></script>
 </body>
 </html>
