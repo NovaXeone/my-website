@@ -118,3 +118,5 @@ function escapeHtml(str) {
 loadArchive();
 loadDashboardStats();
 lockNewFile();
+
+<button class="btn" id="authBtn" style="margin-left:14px;">Sign in</button>
