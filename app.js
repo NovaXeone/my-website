@@ -1,3 +1,45 @@
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+let currentUser = null;
+
+function setupAuthButton() {
+  const btn = document.getElementById("authBtn");
+  if (!btn) return;
+
+  btn.addEventListener("click", async () => {
+    try {
+      if (!currentUser) {
+        await signInWithPopup(auth, provider);
+      } else {
+        await signOut(auth);
+      }
+    } catch (e) {
+      alert(e.message);
+    }
+  });
+}
+
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+
+  const btn = document.getElementById("authBtn");
+  if (btn) btn.textContent = user ? "Sign out" : "Sign in";
+
+  // optional: show user name somewhere later
+});
+
+setupAuthButton();
+
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
   getFirestore,
