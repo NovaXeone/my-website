@@ -1,3 +1,14 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  updateDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import {
   getAuth,
   GoogleAuthProvider,
@@ -6,159 +17,115 @@ import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
+const firebaseConfig = {
+  apiKey: "PASTE",
+  authDomain: "PASTE",
+  projectId: "PASTE"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 let currentUser = null;
 
-function setupAuthButton() {
-  const btn = document.getElementById("authBtn");
-  if (!btn) return;
+const authBtn = document.getElementById("authBtn");
 
-  btn.addEventListener("click", async () => {
-    try {
-      if (!currentUser) {
-        await signInWithPopup(auth, provider);
-      } else {
-        await signOut(auth);
-      }
-    } catch (e) {
-      alert(e.message);
-    }
-  });
-}
+authBtn?.addEventListener("click", async () => {
+  if (!currentUser) {
+    await signInWithPopup(auth, provider);
+  } else {
+    await signOut(auth);
+  }
+});
 
 onAuthStateChanged(auth, (user) => {
   currentUser = user;
-
-  const btn = document.getElementById("authBtn");
-  if (btn) btn.textContent = user ? "Sign out" : "Sign in";
-
-  // optional: show user name somewhere later
+  if (authBtn) authBtn.textContent = user ? "Sign out" : "Sign in";
+  loadApprovedPosts();
+  loadPendingPosts();
+  loadDashboard();
 });
 
-setupAuthButton();
+async function submitPost() {
+  if (!currentUser) return alert("Login required.");
 
+  const title = document.getElementById("titleInput").value;
+  const content = document.getElementById("contentInput").value;
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  query,
-  orderBy
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  await addDoc(collection(db, "posts"), {
+    title,
+    content,
+    authorId: currentUser.uid,
+    authorName: currentUser.displayName,
+    approvalState: "pending",
+    createdAt: Date.now()
+  });
 
-// ✅ PASTE YOUR firebaseConfig HERE (from Firebase console)
-const firebaseConfig = {
-  apiKey: "AIzaSyDm3s8rrISreQcf4GJrHgSiiQi_aTnAZIY",
-  authDomain: "database-28865.firebaseapp.com",
-  projectId: "database-28865",
-  storageBucket: "database-28865.firebasestorage.app",
-  messagingSenderId: "755443492467",
-  appId: "1:755443492467:web:9482709a391b8de334ac06"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// Utility: safely get element
-function el(id) {
-  return document.getElementById(id);
+  document.getElementById("submitStatus").innerText =
+    "Submitted for approval.";
 }
 
-// Load Archive posts (read-only)
-async function loadArchive() {
-  const postsDiv = el("posts");
-  if (!postsDiv) return;
+document.getElementById("submitBtn")?.addEventListener("click", submitPost);
 
-  postsDiv.innerHTML = `<div class="card">Loading archive…</div>`;
+async function loadApprovedPosts() {
+  const postsDiv = document.getElementById("posts");
+  const recentDiv = document.getElementById("recentPosts");
+  if (!postsDiv && !recentDiv) return;
 
-  const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
-  const snapshot = await getDocs(q);
+  const q = query(collection(db, "posts"), where("approvalState", "==", "approved"));
+  const snap = await getDocs(q);
 
-  if (snapshot.empty) {
-    postsDiv.innerHTML = `<div class="card">No files found.</div>`;
-    return;
-  }
+  if (postsDiv) postsDiv.innerHTML = "";
+  if (recentDiv) recentDiv.innerHTML = "";
 
-  postsDiv.innerHTML = "";
-  snapshot.forEach((doc) => {
-    const d = doc.data();
+  snap.forEach((docSnap) => {
+    const d = docSnap.data();
+    const html = `<div class="card"><h3>${d.title}</h3><p>${d.content}</p></div>`;
+    postsDiv && (postsDiv.innerHTML += html);
+    recentDiv && (recentDiv.innerHTML += html);
+  });
+}
 
-    const title = d.title ?? "Untitled";
-    const content = d.content ?? "";
-    const status = (d.status ?? "active").toLowerCase();
+async function loadPendingPosts() {
+  const div = document.getElementById("pendingPosts");
+  if (!div || !currentUser) return;
 
-    const card = document.createElement("div");
-    card.className = "card";
-    card.style.marginBottom = "14px";
+  div.innerHTML = "";
+  const q = query(collection(db, "posts"), where("approvalState", "==", "pending"));
+  const snap = await getDocs(q);
 
-    card.innerHTML = `
-      <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;">
-        <div style="font-size:18px;font-weight:600;">${escapeHtml(title)}</div>
-        <div style="font-size:12px;color:var(--muted);border:1px solid var(--border);padding:6px 10px;border-radius:999px;">
-          ${escapeHtml(status.toUpperCase())}
-        </div>
-      </div>
-      <div style="margin-top:10px;color:var(--muted);white-space:pre-wrap;line-height:1.45;">
-        ${escapeHtml(content)}
+  snap.forEach((docSnap) => {
+    const d = docSnap.data();
+    const html = `
+      <div class="card">
+        <h3>${d.title}</h3>
+        <p>${d.content}</p>
+        <button onclick="approvePost('${docSnap.id}')">Approve</button>
       </div>
     `;
-
-    postsDiv.appendChild(card);
+    div.innerHTML += html;
   });
 }
 
-// Load Dashboard stats
-async function loadDashboardStats() {
-  const totalEl = el("totalFiles");
-  const activeEl = el("activeFiles");
-  const redactedEl = el("redactedFiles");
-  if (!totalEl || !activeEl || !redactedEl) return;
-
-  const snapshot = await getDocs(collection(db, "posts"));
-
-  let total = 0;
-  let active = 0;
-  let redacted = 0;
-
-  snapshot.forEach((doc) => {
-    total++;
-    const s = (doc.data().status ?? "active").toLowerCase();
-    if (s === "redacted") redacted++;
-    else active++;
+window.approvePost = async function(id) {
+  await updateDoc(doc(db, "posts", id), {
+    approvalState: "approved"
   });
+  loadPendingPosts();
+};
 
-  totalEl.textContent = String(total);
-  activeEl.textContent = String(active);
-  redactedEl.textContent = String(redacted);
+async function loadDashboard() {
+  const totalEl = document.getElementById("totalFiles");
+  const pendingEl = document.getElementById("pendingFiles");
+  if (!totalEl) return;
+
+  const snap = await getDocs(collection(db, "posts"));
+  totalEl.textContent = snap.size;
+
+  const pendingSnap = await getDocs(
+    query(collection(db, "posts"), where("approvalState", "==", "pending"))
+  );
+  pendingEl.textContent = pendingSnap.size;
 }
-
-// Disable submit button for now (because rules block writes)
-function lockNewFile() {
-  const btn = el("submitBtn");
-  if (!btn) return;
-
-  btn.disabled = true;
-  btn.textContent = "Submit (login required)";
-  btn.style.opacity = "0.6";
-  btn.style.cursor = "not-allowed";
-}
-
-// Basic HTML escaping (prevents weird injection issues)
-function escapeHtml(str) {
-  return String(str)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-// Run page-specific loaders
-loadArchive();
-loadDashboardStats();
-lockNewFile();
-
-<button class="btn" id="authBtn" style="margin-left:14px;">Sign in</button>
