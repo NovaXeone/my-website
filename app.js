@@ -9,10 +9,12 @@ import {
   updateDoc,
   doc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
 import {
   getAuth,
   GoogleAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   signOut,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -32,23 +34,13 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 let currentUser = null;
-
 const authBtn = document.getElementById("authBtn");
 
 authBtn?.addEventListener("click", async () => {
-  try {
-    if (!currentUser) {
-      await signInWithPopup(auth, provider);
-    } else {
-      await signOut(auth);
-    }
-  } catch (e) {
-    console.error("AUTH FULL ERROR OBJECT:", e);
-    alert(JSON.stringify({
-      code: e?.code,
-      message: e?.message,
-      name: e?.name
-    }, null, 2));
+  if (!currentUser) {
+    await signInWithRedirect(auth, provider);
+  } else {
+    await signOut(auth);
   }
 });
 
@@ -60,11 +52,15 @@ onAuthStateChanged(auth, (user) => {
   loadDashboard();
 });
 
+getRedirectResult(auth).catch(console.error);
+
 async function submitPost() {
   if (!currentUser) return alert("Login required.");
 
-  const title = document.getElementById("titleInput").value;
-  const content = document.getElementById("contentInput").value;
+  const title = document.getElementById("titleInput")?.value;
+  const content = document.getElementById("contentInput")?.value;
+
+  if (!title || !content) return alert("Fill out all fields.");
 
   await addDoc(collection(db, "posts"), {
     title,
@@ -89,8 +85,8 @@ async function loadApprovedPosts() {
   const q = query(collection(db, "posts"), where("approvalState", "==", "approved"));
   const snap = await getDocs(q);
 
-  if (postsDiv) postsDiv.innerHTML = "";
-  if (recentDiv) recentDiv.innerHTML = "";
+  postsDiv && (postsDiv.innerHTML = "");
+  recentDiv && (recentDiv.innerHTML = "");
 
   snap.forEach((docSnap) => {
     const d = docSnap.data();
@@ -102,11 +98,12 @@ async function loadApprovedPosts() {
 
 async function loadPendingPosts() {
   const div = document.getElementById("pendingPosts");
-  if (!div || !currentUser) return;
+  if (!div) return;
 
-  div.innerHTML = "";
   const q = query(collection(db, "posts"), where("approvalState", "==", "pending"));
   const snap = await getDocs(q);
+
+  div.innerHTML = "";
 
   snap.forEach((docSnap) => {
     const d = docSnap.data();
