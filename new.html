@@ -1,42 +1,35 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Project Nadir — New File</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>New File — Project Nadir</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="nav">
-    <div class="brand">PROJECT NADIR</div>
-    <div>
-      <a href="index.html">Dashboard</a>
-      <a href="archive.html">Archive</a>
-      <a href="new.html">New File</a>
-    </div>
+
+<div class="nav">
+  <div class="brand">PROJECT NADIR</div>
+  <div>
+    <a href="index.html">Dashboard</a>
+    <a href="archive.html">Archive</a>
+    <a href="new.html">New File</a>
+    <a href="profile.html">Profile</a>
+    <a href="admin.html">Admin</a>
+    <a href="moderation.html">Moderation</a>
+    <button id="authBtn" class="btn">Sign in</button>
   </div>
+</div>
 
-  <div class="container">
-    <div class="header">
-      <h1>NEW FILE</h1>
-      <p>Create and submit a record</p>
-    </div>
+<div class="container">
+  <h1>Submit New File</h1>
 
-    <div class="card" style="max-width:720px;margin:0 auto;">
-      <div style="margin-bottom:10px;color:var(--muted);font-size:13px;">TITLE</div>
-      <input class="input" id="title" placeholder="File title">
+  <input id="titleInput" placeholder="File Title" />
+  <textarea id="contentInput" placeholder="File Content"></textarea>
+  <button id="submitBtn" class="btn">Submit (Pending Approval)</button>
 
-      <div style="margin:16px 0 10px;color:var(--muted);font-size:13px;">CONTENT</div>
-      <textarea class="textarea" id="content" placeholder="Write the file content..."></textarea>
+  <p id="submitStatus"></p>
+</div>
 
-      <div style="margin-top:14px;display:flex;gap:10px;justify-content:flex-end;">
-        <button class="btn" id="submitBtn">Submit</button>
-
-        <button class="btn" id="authBtn" style="margin-left:14px;">Sign in</button>
-      </div>
-    </div>
-  </div>
-
-  <script type="module" src="app.js"></script>
+<script type="module" src="app.js"></script>
 </body>
 </html>
